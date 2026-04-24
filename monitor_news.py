@@ -1,7 +1,7 @@
 """
 AI Stock News Monitor
 =====================
-Fetches latest stock news via yfinance, summarises with Gemini 1.5 Flash,
+Fetches latest stock news via yfinance, summarises with Gemini 2.5 Flash,
 and delivers a formatted Markdown report to Telegram.
 
 Environment Variables (required):
@@ -18,7 +18,7 @@ import logging
 from datetime import datetime, timezone
 
 import yfinance as yf
-import google.generativeai as genai
+from google import genai
 import requests
 
 # ---------------------------------------------------------------------------
@@ -32,7 +32,7 @@ TICKERS: list[str] = ["MSFT", "NVDA", "GOOGL", "AAPL", "AMZN", "TSLA", "V", "EOS
 MAX_NEWS_PER_TICKER: int = 3
 
 # Gemini model
-GEMINI_MODEL: str = "gemini-1.5-flash"
+GEMINI_MODEL: str = "gemini-2.5-flash"
 
 # Logging
 logging.basicConfig(
@@ -162,14 +162,16 @@ def build_prompt(news_data: dict[str, list[dict]]) -> str:
 
 def summarise_with_gemini(prompt: str, api_key: str) -> str:
     """
-    Send the prompt to Gemini 1.5 Flash and return the generated summary.
+    Send the prompt to Gemini 2.5 Flash and return the generated summary.
     """
     logger.info("Sending prompt to Gemini (%s) …", GEMINI_MODEL)
 
     try:
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel(GEMINI_MODEL)
-        response = model.generate_content(prompt)
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=prompt,
+        )
 
         if not response or not response.text:
             logger.error("Gemini returned an empty response.")
