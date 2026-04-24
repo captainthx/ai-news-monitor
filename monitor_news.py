@@ -26,7 +26,7 @@ import requests
 # ---------------------------------------------------------------------------
 
 # Stock tickers to monitor – edit this list to your preference
-TICKERS: list[str] = ["MSFT", "NVDA", "GOOGL", "AAPL", "AMZN", "TSLA", "V", "EOSE"]
+TICKERS: list[str] = ["MSFT", "NVDA", "GOOGL", "RKLB", "AMZN", "V", "EOSE"]
 
 # Maximum news items to fetch per ticker
 MAX_NEWS_PER_TICKER: int = 3
@@ -82,25 +82,31 @@ def fetch_news(
             for article in raw_news[:max_items]:
                 # Handle newer yfinance format where data is nested under 'content'
                 content = article.get("content", article)
-                
+
                 title = content.get("title", "N/A")
-                
+
                 # Publisher could be a string or a dict
                 provider = content.get("provider", {})
                 if isinstance(provider, dict):
                     publisher = provider.get("displayName", "Unknown")
                 else:
                     publisher = content.get("publisher", "Unknown")
-                
+
                 # Link could be in clickThroughUrl, canonicalUrl, or direct link
                 link = ""
-                if "clickThroughUrl" in content and isinstance(content["clickThroughUrl"], dict) and content["clickThroughUrl"].get("url"):
+                if (
+                    "clickThroughUrl" in content
+                    and isinstance(content["clickThroughUrl"], dict)
+                    and content["clickThroughUrl"].get("url")
+                ):
                     link = content["clickThroughUrl"].get("url", "")
-                elif "canonicalUrl" in content and isinstance(content["canonicalUrl"], dict):
+                elif "canonicalUrl" in content and isinstance(
+                    content["canonicalUrl"], dict
+                ):
                     link = content["canonicalUrl"].get("url", "")
                 elif "link" in content:
                     link = content.get("link", "")
-                    
+
                 items.append(
                     {
                         "title": title,
