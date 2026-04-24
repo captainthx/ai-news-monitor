@@ -1,0 +1,47 @@
+# ============================================================
+# AI Stock News Monitor — Daily Cron Workflow
+# ============================================================
+# Runs every day at 08:00 UTC and supports manual triggers.
+# Required GitHub Secrets:
+#   - GEMINI_API_KEY
+#   - TELEGRAM_BOT_TOKEN
+#   - TELEGRAM_CHAT_ID
+# ============================================================
+
+name: Daily Stock News Report
+
+on:
+  schedule:
+    # Every day at 08:00 UTC (15:00 ICT)
+    - cron: "0 8 * * *"
+
+  # Allow manual runs from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  send-report:
+    name: Fetch, Summarise & Send
+    runs-on: ubuntu-latest
+
+    steps:
+      # ---- Checkout repository ----
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---- Setup Python ----
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ---- Install dependencies ----
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ---- Run the monitor ----
+      - name: Run AI Stock News Monitor
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python monitor_news.py
