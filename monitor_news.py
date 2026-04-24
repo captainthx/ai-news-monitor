@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import os
 import sys
+import time
 import logging
 from datetime import datetime, timezone
 
@@ -187,29 +188,37 @@ def build_prompt(news_data: dict[str, list[dict]]) -> str:
 # ---------------------------------------------------------------------------
 
 
-def summarise_with_gemini(prompt: str, api_key: str) -> str:
+def summarise_with_gemini(prompt: str, api_key: str, max_retries: int = 3) -> str:
     """
     Send the prompt to Gemini 2.5 Flash and return the generated summary.
+    Includes a retry mechanism for 503 Unavailable errors.
     """
     logger.info("Sending prompt to Gemini (%s) …", GEMINI_MODEL)
+    client = genai.Client(api_key=api_key)
 
-    try:
-        client = genai.Client(api_key=api_key)
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt,
-        )
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt,
+            )
 
-        if not response or not response.text:
-            logger.error("Gemini returned an empty response.")
-            return "⚠️ ไม่สามารถสร้างสรุปข่าวได้ — Gemini ไม่ตอบกลับ"
+            if not response or not response.text:
+                logger.error("Gemini returned an empty response.")
+                return "⚠️ ไม่สามารถสร้างสรุปข่าวได้ — Gemini ไม่ตอบกลับ"
 
-        logger.info("Gemini response received (%d chars).", len(response.text))
-        return response.text
+            logger.info("Gemini response received (%d chars).", len(response.text))
+            return response.text
 
-    except Exception as exc:
-        logger.error("Gemini API error: %s", exc)
-        return f"⚠️ เกิดข้อผิดพลาดจาก Gemini API: {exc}"
+        except Exception as exc:
+            logger.warning("Gemini API error on attempt %d/%d: %s", attempt, max_retries, exc)
+            if attempt < max_retries:
+                sleep_time = 15 * attempt
+                logger.info("Retrying in %d seconds...", sleep_time)
+                time.sleep(sleep_time)
+            else:
+                logger.error("All Gemini API retry attempts failed.")
+                return f"⚠️ เกิดข้อผิดพลาดจาก Gemini API: {exc}"
 
 
 # ---------------------------------------------------------------------------

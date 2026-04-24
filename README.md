@@ -22,14 +22,15 @@ Automated daily stock news analysis powered by **Gemini 2.5 Flash**, delivered s
 
 ## Monitored Stocks (default)
 
-| Ticker | Company   |
-| ------ | --------- |
-| MSFT   | Microsoft |
-| NVDA   | NVIDIA    |
-| GOOGL  | Alphabet  |
-| AAPL   | Apple     |
-| AMZN   | Amazon    |
-| TSLA   | Tesla     |
+| Ticker | Company    |
+| ------ | ---------- |
+| MSFT   | Microsoft  |
+| NVDA   | NVIDIA     |
+| GOOGL  | Alphabet   |
+| AMZN   | Amazon     |
+| RKLB   | Rocket Lab |
+| EOSE   | EOS Energy |
+| V      | Visa       |
 
 > Edit the `TICKERS` list in `monitor_news.py` to customise.
 
