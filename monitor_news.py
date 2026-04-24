@@ -241,9 +241,20 @@ def send_telegram_message(
     """
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
 
-    # Telegram message limit
-    max_len = 4096
-    chunks = [text[i : i + max_len] for i in range(0, len(text), max_len)]
+    # Telegram message limit (slightly under 4096 to be safe)
+    max_len = 4000
+    chunks = []
+    
+    current_chunk = ""
+    for line in text.split("\n"):
+        if len(current_chunk) + len(line) + 1 > max_len:
+            chunks.append(current_chunk.strip())
+            current_chunk = line + "\n"
+        else:
+            current_chunk += line + "\n"
+            
+    if current_chunk.strip():
+        chunks.append(current_chunk.strip())
 
     success = True
     for idx, chunk in enumerate(chunks, 1):
