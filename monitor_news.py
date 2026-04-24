@@ -80,11 +80,32 @@ def fetch_news(
 
             items: list[dict] = []
             for article in raw_news[:max_items]:
+                # Handle newer yfinance format where data is nested under 'content'
+                content = article.get("content", article)
+                
+                title = content.get("title", "N/A")
+                
+                # Publisher could be a string or a dict
+                provider = content.get("provider", {})
+                if isinstance(provider, dict):
+                    publisher = provider.get("displayName", "Unknown")
+                else:
+                    publisher = content.get("publisher", "Unknown")
+                
+                # Link could be in clickThroughUrl, canonicalUrl, or direct link
+                link = ""
+                if "clickThroughUrl" in content and isinstance(content["clickThroughUrl"], dict) and content["clickThroughUrl"].get("url"):
+                    link = content["clickThroughUrl"].get("url", "")
+                elif "canonicalUrl" in content and isinstance(content["canonicalUrl"], dict):
+                    link = content["canonicalUrl"].get("url", "")
+                elif "link" in content:
+                    link = content.get("link", "")
+                    
                 items.append(
                     {
-                        "title": article.get("title", "N/A"),
-                        "publisher": article.get("publisher", "Unknown"),
-                        "link": article.get("link", ""),
+                        "title": title,
+                        "publisher": publisher,
+                        "link": link,
                     }
                 )
 
