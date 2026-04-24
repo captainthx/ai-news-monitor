@@ -128,6 +128,18 @@ ai-news-monitor/
 
 ---
 
+## 🚀 Roadmap & Future Features
+
+We plan to develop the following enhancements in future iterations:
+
+- [ ] **🟢🔴 Sentiment Tags (Quick Scan)**: Ask Gemini to explicitly output a "BULLISH 🟢", "BEARISH 🔴", or "NEUTRAL ⚪" tag for each stock so the report can be scanned in seconds.
+- [ ] **📈 Include Stock Price Data**: Feed yesterday's closing price and percentage change (via `yfinance`) into the Gemini prompt so the AI can ground its "Market Impact" analysis in actual numerical data.
+- [ ] **🧠 Weekly Recap Report**: Add a second GitHub Action workflow that runs on Friday evenings, fetching the top 10 news items for the week and asking Gemini to write a "Weekly Market Wrap-up" to prepare for the week ahead.
+- [ ] **🤖 Interactive Telegram Bot (On-Demand)**: Upgrade the script to listen for commands (e.g., `/analyze TSLA`) so the bot can fetch news and reply instantly at any time, rather than just relying on the daily cron job.
+- [ ] **🪙 Crypto Support**: Expand the `yfinance` scope to include cryptocurrencies like `BTC-USD` and `ETH-USD`, potentially separating them into a distinct section of the report.
+
+---
+
 ## License
 
 MIT — feel free to fork and adapt.
