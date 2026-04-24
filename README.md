@@ -1,18 +1,18 @@
 # 📈 AI Stock News Monitor
 
-Automated daily stock news analysis powered by **Gemini 1.5 Flash**, delivered straight to **Telegram** — running entirely on **GitHub Actions** (zero infrastructure).
+Automated daily stock news analysis powered by **Gemini 2.5 Flash**, delivered straight to **Telegram** — running entirely on **GitHub Actions** (zero infrastructure).
 
 ## How It Works
 
 ```
 ┌─────────────┐     ┌──────────────┐     ┌──────────────┐
-│  yfinance    │────▶│  Gemini 1.5  │────▶│  Telegram    │
+│  yfinance    │────▶│  Gemini 2.5  │────▶│  Telegram    │
 │  (fetch news)│     │  Flash (AI)  │     │  (send report)│
 └─────────────┘     └──────────────┘     └──────────────┘
 ```
 
 1. **Fetch** — Retrieves the latest 3 news articles per stock ticker via `yfinance`.
-2. **Analyse** — Sends the news to Gemini 1.5 Flash with a Thai-language prompt focused on:
+2. **Analyse** — Sends the news to Gemini 2.2 Flash with a Thai-language prompt focused on:
    - 📊 Market Impact
    - 💰 Earnings & Capacity
    - 🔮 Future Outlook
@@ -22,14 +22,14 @@ Automated daily stock news analysis powered by **Gemini 1.5 Flash**, delivered s
 
 ## Monitored Stocks (default)
 
-| Ticker | Company       |
-|--------|---------------|
-| MSFT   | Microsoft     |
-| NVDA   | NVIDIA        |
-| GOOGL  | Alphabet      |
-| AAPL   | Apple         |
-| AMZN   | Amazon        |
-| TSLA   | Tesla         |
+| Ticker | Company   |
+| ------ | --------- |
+| MSFT   | Microsoft |
+| NVDA   | NVIDIA    |
+| GOOGL  | Alphabet  |
+| AAPL   | Apple     |
+| AMZN   | Amazon    |
+| TSLA   | Tesla     |
 
 > Edit the `TICKERS` list in `monitor_news.py` to customise.
 
@@ -59,11 +59,11 @@ Navigate to your repository:
 
 Add the following three secrets:
 
-| Secret Name          | Description                              | How to Get It                                                                 |
-|----------------------|------------------------------------------|-------------------------------------------------------------------------------|
-| `GEMINI_API_KEY`     | Google AI Studio API key                 | Go to [AI Studio](https://aistudio.google.com/app/apikey) → Create API Key   |
-| `TELEGRAM_BOT_TOKEN` | Telegram Bot API token                  | Message [@BotFather](https://t.me/BotFather) → `/newbot` → copy the token    |
-| `TELEGRAM_CHAT_ID`  | Target chat/channel ID                   | Message [@userinfobot](https://t.me/userinfobot) or use the method below     |
+| Secret Name          | Description              | How to Get It                                                              |
+| -------------------- | ------------------------ | -------------------------------------------------------------------------- |
+| `GEMINI_API_KEY`     | Google AI Studio API key | Go to [AI Studio](https://aistudio.google.com/app/apikey) → Create API Key |
+| `TELEGRAM_BOT_TOKEN` | Telegram Bot API token   | Message [@BotFather](https://t.me/BotFather) → `/newbot` → copy the token  |
+| `TELEGRAM_CHAT_ID`   | Target chat/channel ID   | Message [@userinfobot](https://t.me/userinfobot) or use the method below   |
 
 #### How to Find Your Telegram Chat ID
 
@@ -117,13 +117,13 @@ ai-news-monitor/
 
 ## 🛠️ Customisation
 
-| What                    | Where                                    |
-|-------------------------|------------------------------------------|
-| Add/remove tickers      | `TICKERS` list in `monitor_news.py`     |
-| Change schedule          | `cron` field in `daily_news.yml`         |
-| Adjust news count        | `MAX_NEWS_PER_TICKER` in `monitor_news.py` |
-| Modify analysis prompt   | `build_prompt()` in `monitor_news.py`    |
-| Switch Gemini model      | `GEMINI_MODEL` in `monitor_news.py`      |
+| What                   | Where                                      |
+| ---------------------- | ------------------------------------------ |
+| Add/remove tickers     | `TICKERS` list in `monitor_news.py`        |
+| Change schedule        | `cron` field in `daily_news.yml`           |
+| Adjust news count      | `MAX_NEWS_PER_TICKER` in `monitor_news.py` |
+| Modify analysis prompt | `build_prompt()` in `monitor_news.py`      |
+| Switch Gemini model    | `GEMINI_MODEL` in `monitor_news.py`        |
 
 ---
 
